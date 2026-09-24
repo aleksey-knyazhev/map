@@ -4,7 +4,7 @@ import { useMapEvents } from 'react-leaflet';
 const DEBOUNCE_MS = 200;
 const MOVE_THRESHOLD_RATIO = 0.4;
 
-export default function MapPrefetchManager({ onPrefetchRequired }) {
+export default function MapPrefetchManager({ onPrefetchRequired, onViewportChanged }) {
   const lastFetchedRef = useRef(null);
   const debounceTimerRef = useRef(null);
 
@@ -52,11 +52,18 @@ export default function MapPrefetchManager({ onPrefetchRequired }) {
   };
 
   const map = useMapEvents({
-    moveend: () => requestPrefetch(map),
-    zoomend: () => requestPrefetch(map),
+    moveend: () => {
+      onViewportChanged?.(getViewport(map));
+      requestPrefetch(map);
+    },
+    zoomend: () => {
+      onViewportChanged?.(getViewport(map));
+      requestPrefetch(map);
+    },
   });
 
   useEffect(() => {
+    onViewportChanged?.(getViewport(map));
     requestPrefetch(map, true);
 
     return () => {
@@ -67,4 +74,14 @@ export default function MapPrefetchManager({ onPrefetchRequired }) {
   }, [map]);
 
   return null;
+}
+
+function getViewport(map) {
+  const center = map.getCenter();
+
+  return {
+    centerLat: center.lat,
+    centerLng: center.lng,
+    zoom: map.getZoom(),
+  };
 }

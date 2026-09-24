@@ -29,15 +29,13 @@ function getPrefetchBounds(request) {
   ];
 }
 
-function getCenteredSquareBounds(request, bounds) {
-  if (!request || !bounds) {
+function getCenteredSquareBounds(center, bounds) {
+  if (!center || !bounds) {
     return null;
   }
 
   const [[south, west], [north, east]] = bounds;
-  const centerLat = (south + north) / 2;
-  const centerLng = (west + east) / 2;
-  const safeLat = clamp(centerLat, -85, 85);
+  const safeLat = clamp(center.centerLat, -85, 85);
   const cos = Math.max(Math.cos((safeLat * Math.PI) / 180), 0.01);
   const latSpan = north - south;
   const lngSpan = east - west;
@@ -45,8 +43,8 @@ function getCenteredSquareBounds(request, bounds) {
   const squareLngSide = squareLatSide / cos;
 
   return [
-    [centerLat - squareLatSide / 2, centerLng - squareLngSide / 2],
-    [centerLat + squareLatSide / 2, centerLng + squareLngSide / 2],
+    [center.centerLat - squareLatSide / 2, center.centerLng - squareLngSide / 2],
+    [center.centerLat + squareLatSide / 2, center.centerLng + squareLngSide / 2],
   ];
 }
 
@@ -103,10 +101,11 @@ function App() {
   const [markers, setMarkers] = React.useState([]);
   const [status, setStatus] = React.useState('Loading points');
   const [lastRequest, setLastRequest] = React.useState(null);
+  const [viewport, setViewport] = React.useState(null);
   const prefetchBounds = React.useMemo(() => getPrefetchBounds(lastRequest), [lastRequest]);
   const centeredSquareBounds = React.useMemo(
-    () => getCenteredSquareBounds(lastRequest, prefetchBounds),
-    [lastRequest, prefetchBounds],
+    () => getCenteredSquareBounds(viewport ?? lastRequest, prefetchBounds),
+    [viewport, lastRequest, prefetchBounds],
   );
   const tabletBodyBounds = React.useMemo(
     () => scaleBounds(centeredSquareBounds, 1.09, 1.044),
@@ -207,7 +206,10 @@ function App() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <MapPrefetchManager onPrefetchRequired={handlePrefetch} />
+          <MapPrefetchManager
+            onPrefetchRequired={handlePrefetch}
+            onViewportChanged={setViewport}
+          />
           {prefetchBounds && (
             <>
               <Rectangle
