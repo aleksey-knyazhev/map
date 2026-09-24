@@ -29,11 +29,34 @@ function getPrefetchBounds(request) {
   ];
 }
 
+function getCenteredSquareBounds(request, bounds) {
+  if (!request || !bounds) {
+    return null;
+  }
+
+  const [[south, west], [north, east]] = bounds;
+  const safeLat = clamp(request.centerLat, -85, 85);
+  const cos = Math.max(Math.cos((safeLat * Math.PI) / 180), 0.01);
+  const latSpan = north - south;
+  const lngSpan = east - west;
+  const squareLatSide = Math.min(latSpan, lngSpan * cos) * 0.4;
+  const squareLngSide = squareLatSide / cos;
+
+  return [
+    [request.centerLat - squareLatSide / 2, request.centerLng - squareLngSide / 2],
+    [request.centerLat + squareLatSide / 2, request.centerLng + squareLngSide / 2],
+  ];
+}
+
 function App() {
   const [markers, setMarkers] = React.useState([]);
   const [status, setStatus] = React.useState('Loading points');
   const [lastRequest, setLastRequest] = React.useState(null);
   const prefetchBounds = React.useMemo(() => getPrefetchBounds(lastRequest), [lastRequest]);
+  const centeredSquareBounds = React.useMemo(
+    () => getCenteredSquareBounds(lastRequest, prefetchBounds),
+    [lastRequest, prefetchBounds],
+  );
 
   const handlePrefetch = React.useCallback(({ centerLat, centerLng, zoom }) => {
     const params = new URLSearchParams({
@@ -123,16 +146,29 @@ function App() {
           />
           <MapPrefetchManager onPrefetchRequired={handlePrefetch} />
           {prefetchBounds && (
-            <Rectangle
-              bounds={prefetchBounds}
-              pathOptions={{
-                color: '#d11f1f',
-                dashArray: '8 8',
-                fill: false,
-                opacity: 0.95,
-                weight: 2,
-              }}
-            />
+            <>
+              <Rectangle
+                bounds={prefetchBounds}
+                pathOptions={{
+                  color: '#d11f1f',
+                  dashArray: '28 24',
+                  fill: false,
+                  opacity: 0.95,
+                  weight: 10,
+                }}
+              />
+              {centeredSquareBounds && (
+                <Rectangle
+                  bounds={centeredSquareBounds}
+                  pathOptions={{
+                    color: '#111827',
+                    fill: false,
+                    opacity: 0.9,
+                    weight: 3,
+                  }}
+                />
+              )}
+            </>
           )}
           {markers.map((marker) => (
             <CircleMarker
