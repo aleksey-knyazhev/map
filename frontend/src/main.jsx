@@ -1,14 +1,39 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet';
+import { CircleMarker, MapContainer, Popup, Rectangle, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './styles.css';
 import MapPrefetchManager from './MapPrefetchManager.jsx';
+
+const PREFETCH_MULTIPLIER = 2.5;
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function getPrefetchBounds(request) {
+  if (!request) {
+    return null;
+  }
+
+  const safeLat = clamp(request.centerLat, -85, 85);
+  const safeZoom = clamp(request.zoom, 1, 19);
+  const screenVerticalSpan = 180 / Math.pow(2, safeZoom - 1);
+  const latHalfDelta = (screenVerticalSpan / 2) * PREFETCH_MULTIPLIER;
+  const cos = Math.max(Math.cos((safeLat * Math.PI) / 180), 0.01);
+  const lngHalfDelta = Math.min(latHalfDelta / cos, 180);
+
+  return [
+    [clamp(safeLat - latHalfDelta, -90, 90), request.centerLng - lngHalfDelta],
+    [clamp(safeLat + latHalfDelta, -90, 90), request.centerLng + lngHalfDelta],
+  ];
+}
 
 function App() {
   const [markers, setMarkers] = React.useState([]);
   const [status, setStatus] = React.useState('Loading points');
   const [lastRequest, setLastRequest] = React.useState(null);
+  const prefetchBounds = React.useMemo(() => getPrefetchBounds(lastRequest), [lastRequest]);
 
   const handlePrefetch = React.useCallback(({ centerLat, centerLng, zoom }) => {
     const params = new URLSearchParams({
@@ -97,6 +122,18 @@ function App() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <MapPrefetchManager onPrefetchRequired={handlePrefetch} />
+          {prefetchBounds && (
+            <Rectangle
+              bounds={prefetchBounds}
+              pathOptions={{
+                color: '#d11f1f',
+                dashArray: '8 8',
+                fill: false,
+                opacity: 0.95,
+                weight: 2,
+              }}
+            />
+          )}
           {markers.map((marker) => (
             <CircleMarker
               key={marker.id}
