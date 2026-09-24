@@ -35,16 +35,67 @@ function getCenteredSquareBounds(request, bounds) {
   }
 
   const [[south, west], [north, east]] = bounds;
-  const safeLat = clamp(request.centerLat, -85, 85);
+  const centerLat = (south + north) / 2;
+  const centerLng = (west + east) / 2;
+  const safeLat = clamp(centerLat, -85, 85);
   const cos = Math.max(Math.cos((safeLat * Math.PI) / 180), 0.01);
   const latSpan = north - south;
   const lngSpan = east - west;
-  const squareLatSide = Math.min(latSpan, lngSpan * cos) * 0.4;
+  const squareLatSide = Math.min(latSpan, lngSpan * cos) * 0.32;
   const squareLngSide = squareLatSide / cos;
 
   return [
-    [request.centerLat - squareLatSide / 2, request.centerLng - squareLngSide / 2],
-    [request.centerLat + squareLatSide / 2, request.centerLng + squareLngSide / 2],
+    [centerLat - squareLatSide / 2, centerLng - squareLngSide / 2],
+    [centerLat + squareLatSide / 2, centerLng + squareLngSide / 2],
+  ];
+}
+
+function scaleBounds(bounds, latScale, lngScale) {
+  if (!bounds) {
+    return null;
+  }
+
+  const [[south, west], [north, east]] = bounds;
+  const centerLat = (south + north) / 2;
+  const centerLng = (west + east) / 2;
+  const latHalfSide = ((north - south) * latScale) / 2;
+  const lngHalfSide = ((east - west) * lngScale) / 2;
+
+  return [
+    [centerLat - latHalfSide, centerLng - lngHalfSide],
+    [centerLat + latHalfSide, centerLng + lngHalfSide],
+  ];
+}
+
+function getTabletDetails(bodyBounds, screenBounds) {
+  if (!bodyBounds || !screenBounds) {
+    return null;
+  }
+
+  const [[south, west], [north, east]] = bodyBounds;
+  const [[screenSouth], [screenNorth]] = screenBounds;
+  const centerLng = (west + east) / 2;
+  const latSpan = north - south;
+
+  return {
+    camera: [north - latSpan * 0.08, centerLng],
+    power: [(south + screenSouth) / 2, centerLng],
+  };
+}
+
+function getTabletBezelBounds(bodyBounds, screenBounds) {
+  if (!bodyBounds || !screenBounds) {
+    return [];
+  }
+
+  const [[bodySouth, bodyWest], [bodyNorth, bodyEast]] = bodyBounds;
+  const [[screenSouth, screenWest], [screenNorth, screenEast]] = screenBounds;
+
+  return [
+    [[screenNorth, bodyWest], [bodyNorth, bodyEast]],
+    [[bodySouth, bodyWest], [screenSouth, bodyEast]],
+    [[screenSouth, bodyWest], [screenNorth, screenWest]],
+    [[screenSouth, screenEast], [screenNorth, bodyEast]],
   ];
 }
 
@@ -56,6 +107,18 @@ function App() {
   const centeredSquareBounds = React.useMemo(
     () => getCenteredSquareBounds(lastRequest, prefetchBounds),
     [lastRequest, prefetchBounds],
+  );
+  const tabletBodyBounds = React.useMemo(
+    () => scaleBounds(centeredSquareBounds, 1.09, 1.044),
+    [centeredSquareBounds],
+  );
+  const tabletDetails = React.useMemo(
+    () => getTabletDetails(tabletBodyBounds, centeredSquareBounds),
+    [tabletBodyBounds, centeredSquareBounds],
+  );
+  const tabletBezelBounds = React.useMemo(
+    () => getTabletBezelBounds(tabletBodyBounds, centeredSquareBounds),
+    [tabletBodyBounds, centeredSquareBounds],
   );
 
   const handlePrefetch = React.useCallback(({ centerLat, centerLng, zoom }) => {
@@ -157,16 +220,65 @@ function App() {
                   weight: 10,
                 }}
               />
-              {centeredSquareBounds && (
-                <Rectangle
-                  bounds={centeredSquareBounds}
-                  pathOptions={{
-                    color: '#111827',
-                    fill: false,
-                    opacity: 0.9,
-                    weight: 3,
-                  }}
-                />
+              {tabletBodyBounds && centeredSquareBounds && tabletDetails && (
+                <>
+                  {tabletBezelBounds.map((bounds, index) => (
+                    <Rectangle
+                      key={`tablet-bezel-${index}`}
+                      bounds={bounds}
+                      interactive={false}
+                      pathOptions={{
+                        color: '#ffffff',
+                        fillColor: '#ffffff',
+                        fillOpacity: 1,
+                        opacity: 0,
+                        weight: 0,
+                      }}
+                    />
+                  ))}
+                  <Rectangle
+                    bounds={tabletBodyBounds}
+                    interactive={false}
+                    pathOptions={{
+                      color: '#111827',
+                      fill: false,
+                      opacity: 0.92,
+                      weight: 4,
+                    }}
+                  />
+                  <Rectangle
+                    bounds={centeredSquareBounds}
+                    interactive={false}
+                    pathOptions={{
+                      color: '#111827',
+                      fill: false,
+                      opacity: 0.9,
+                      weight: 2,
+                    }}
+                  />
+                  <CircleMarker
+                    center={tabletDetails.camera}
+                    interactive={false}
+                    pathOptions={{
+                      color: '#111827',
+                      fillColor: '#111827',
+                      fillOpacity: 0.9,
+                    }}
+                    radius={3}
+                    weight={1}
+                  />
+                  <CircleMarker
+                    center={tabletDetails.power}
+                    interactive={false}
+                    pathOptions={{
+                      color: '#111827',
+                      fill: false,
+                      opacity: 0.9,
+                    }}
+                    radius={8}
+                    weight={2}
+                  />
+                </>
               )}
             </>
           )}
