@@ -129,9 +129,9 @@ h2 {
 }
 
 .marker-list li {
-  display: flex;
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -140,7 +140,18 @@ h2 {
 }
 
 .marker-list span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 700;
+}
+
+.type-dot {
+  width: 10px;
+  height: 10px;
+  border: 1px solid rgba(23, 33, 27, 0.22);
+  border-radius: 50%;
 }
 
 .map-stage {

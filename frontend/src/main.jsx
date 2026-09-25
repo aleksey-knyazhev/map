@@ -6,6 +6,60 @@ import './styles.css';
 import MapPrefetchManager from './MapPrefetchManager.jsx';
 
 const PREFETCH_MULTIPLIER = 2.5;
+const TYPE_STYLES = {
+  culture: {
+    label: 'Culture',
+    color: '#7c3aed',
+    fillColor: '#c4b5fd',
+    radius: 8,
+  },
+  landmark: {
+    label: 'Landmark',
+    color: '#b91c1c',
+    fillColor: '#fca5a5',
+    radius: 10,
+  },
+  park: {
+    label: 'Park',
+    color: '#15803d',
+    fillColor: '#86efac',
+    radius: 8,
+  },
+  sport: {
+    label: 'Sport',
+    color: '#1d4ed8',
+    fillColor: '#93c5fd',
+    radius: 9,
+  },
+  street: {
+    label: 'Street',
+    color: '#ca8a04',
+    fillColor: '#fde68a',
+    radius: 7,
+  },
+  transport: {
+    label: 'Transport',
+    color: '#0f766e',
+    fillColor: '#5eead4',
+    radius: 8,
+  },
+  venue: {
+    label: 'Venue',
+    color: '#c2410c',
+    fillColor: '#fdba74',
+    radius: 9,
+  },
+};
+const DEFAULT_TYPE_STYLE = {
+  label: 'Point',
+  color: '#1f6f56',
+  fillColor: '#f0b13e',
+  radius: 8,
+};
+
+function getTypeStyle(type) {
+  return TYPE_STYLES[type] ?? DEFAULT_TYPE_STYLE;
+}
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -186,8 +240,15 @@ function App() {
           <ul>
             {markers.map((marker) => (
               <li key={marker.id}>
+                <i
+                  aria-hidden="true"
+                  className="type-dot"
+                  style={{ backgroundColor: getTypeStyle(marker.type).fillColor }}
+                />
                 <span>{marker.title}</span>
-                <small>{marker.type}</small>
+                <small style={{ color: getTypeStyle(marker.type).color }}>
+                  {getTypeStyle(marker.type).label}
+                </small>
               </li>
             ))}
           </ul>
@@ -288,14 +349,18 @@ function App() {
             <CircleMarker
               key={marker.id}
               center={[marker.lat, marker.lng]}
-              pathOptions={{ color: '#1f6f56', fillColor: '#f0b13e', fillOpacity: 0.9 }}
-              radius={8}
-              weight={2}
+              pathOptions={{
+                color: getTypeStyle(marker.type).color,
+                fillColor: getTypeStyle(marker.type).fillColor,
+                fillOpacity: 0.88,
+              }}
+              radius={getTypeStyle(marker.type).radius}
+              weight={3}
             >
               <Popup>
                 <div className="popup">
                   <strong>{marker.title}</strong>
-                  <span>{marker.type}</span>
+                  <span>{getTypeStyle(marker.type).label}</span>
                 </div>
               </Popup>
             </CircleMarker>
