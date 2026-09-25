@@ -1,4 +1,4 @@
-package ru.map;
+package ru.map.controller;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
@@ -10,14 +10,13 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.core.type.Argument;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import ru.map.model.MapPoint;
+import ru.map.service.MapPrefetchService;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,12 +27,12 @@ class MapControllerHttpTest {
     HttpClient client;
 
     @Inject
-    MapPointRepository repository;
+    MapPrefetchService prefetchService;
 
     @Test
-    void prefetchReturnsMapPointJson() throws Exception {
-        when(repository.findVisiblePoints(anyDouble(), anyDouble(), anyDouble(), anyDouble(), anyInt()))
-                .thenReturn(List.of(entity(7L, "Palace Square", 59.939, 30.3158, MapPointType.LANDMARK, 10)));
+    void prefetchReturnsMapPointJson() {
+        when(prefetchService.prefetch(59.93, 30.31, 12))
+                .thenReturn(List.of(new MapPoint(7L, "Palace Square", 59.939, 30.3158, "landmark", 10)));
 
         List<MapPoint> result = client.toBlocking().retrieve(
                 HttpRequest.GET("/api/map/prefetch?centerLat=59.93&centerLng=30.31&zoom=12"),
@@ -63,23 +62,8 @@ class MapControllerHttpTest {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     }
 
-    @MockBean(MapPointRepository.class)
-    MapPointRepository repository() {
-        return mock(MapPointRepository.class);
-    }
-
-    private static MapPointEntity entity(
-            Long id,
-            String title,
-            double lat,
-            double lng,
-            MapPointType type,
-            int minZoomToShow
-    ) throws Exception {
-        MapPointEntity entity = new MapPointEntity(title, lat, lng, type, minZoomToShow);
-        Field idField = MapPointEntity.class.getDeclaredField("id");
-        idField.setAccessible(true);
-        idField.set(entity, id);
-        return entity;
+    @MockBean(MapPrefetchService.class)
+    MapPrefetchService prefetchService() {
+        return mock(MapPrefetchService.class);
     }
 }

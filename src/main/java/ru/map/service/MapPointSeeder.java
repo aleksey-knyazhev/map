@@ -1,8 +1,11 @@
-package ru.map;
+package ru.map.service;
 
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.runtime.server.event.ServerStartupEvent;
 import jakarta.inject.Singleton;
+import ru.map.model.MapPointEntity;
+import ru.map.model.MapPointType;
+import ru.map.repository.MapPointRepository;
 
 import java.util.List;
 

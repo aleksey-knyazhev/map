@@ -1,4 +1,4 @@
-package ru.map;
+package ru.map.model;
 
 public enum MapPointType {
     CULTURE,

@@ -1,4 +1,4 @@
-package ru.map;
+package ru.map.model;
 
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.persistence.Column;

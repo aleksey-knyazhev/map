@@ -1,4 +1,4 @@
-package ru.map;
+package ru.map.repository;
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.PostgreSQLContainer;
+import ru.map.model.MapPointEntity;
+import ru.map.model.MapPointType;
 
 import java.util.List;
 import java.util.Map;

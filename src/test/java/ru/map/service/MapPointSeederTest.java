@@ -1,7 +1,8 @@
-package ru.map;
+package ru.map.service;
 
 import io.micronaut.runtime.server.event.ServerStartupEvent;
 import org.junit.jupiter.api.Test;
+import ru.map.repository.MapPointRepository;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
