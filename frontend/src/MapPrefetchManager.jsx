@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useMapEvents } from 'react-leaflet';
 
 const DEBOUNCE_MS = 200;
-const MOVE_THRESHOLD_RATIO = 0.4;
+const MOVE_THRESHOLD_RATIO = 0.5;
 
 export default function MapPrefetchManager({ onPrefetchRequired, onViewportChanged }) {
   const lastFetchedRef = useRef(null);
