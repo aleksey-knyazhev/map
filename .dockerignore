@@ -1,0 +1,10 @@
+.git
+.gradle
+.idea
+build
+materials
+node_modules
+screenshots
+*.iml
+*.ipr
+*.iws
