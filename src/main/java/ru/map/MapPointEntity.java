@@ -3,6 +3,8 @@ package ru.map;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,8 +34,9 @@ public class MapPointEntity {
     @Column(nullable = false)
     private double lng;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type;
+    private MapPointType type;
 
     @Column(name = "min_zoom_to_show", nullable = false)
     private int minZoomToShow;
@@ -41,7 +44,7 @@ public class MapPointEntity {
     public MapPointEntity() {
     }
 
-    public MapPointEntity(String title, double lat, double lng, String type, int minZoomToShow) {
+    public MapPointEntity(String title, double lat, double lng, MapPointType type, int minZoomToShow) {
         this.title = title;
         this.lat = lat;
         this.lng = lng;
@@ -65,7 +68,7 @@ public class MapPointEntity {
         return lng;
     }
 
-    public String getType() {
+    public MapPointType getType() {
         return type;
     }
 

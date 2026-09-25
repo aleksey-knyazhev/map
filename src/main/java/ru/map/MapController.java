@@ -7,6 +7,7 @@ import io.micronaut.http.annotation.QueryValue;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 @Controller("/api/map")
 public class MapController {
@@ -66,7 +67,7 @@ public class MapController {
                 entity.getTitle(),
                 entity.getLat(),
                 entity.getLng(),
-                entity.getType(),
+                entity.getType().name().toLowerCase(Locale.ROOT),
                 entity.getMinZoomToShow()
         );
     }
