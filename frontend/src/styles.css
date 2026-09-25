@@ -175,18 +175,15 @@ h2 {
 
 .map-point-icon__shape {
   display: grid;
-  width: 36px;
-  height: 36px;
+  width: 72px;
+  height: 72px;
   place-items: center;
-  border: 2px solid var(--point-color);
-  border-radius: 50%;
-  background: white;
-  box-shadow: 0 8px 18px rgba(23, 33, 27, 0.24);
+  filter: drop-shadow(0 5px 5px rgba(23, 33, 27, 0.32));
 }
 
 .map-point-icon__shape svg {
-  width: 23px;
-  height: 23px;
+  width: 46px;
+  height: 46px;
 }
 
 .map-point-icon__shape path {

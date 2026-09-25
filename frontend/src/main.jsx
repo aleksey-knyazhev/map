@@ -74,9 +74,9 @@ function getPointIcon(type) {
         </svg>
       </span>
     `,
-    iconAnchor: [18, 18],
-    iconSize: [36, 36],
-    popupAnchor: [0, -18],
+    iconAnchor: [36, 36],
+    iconSize: [72, 72],
+    popupAnchor: [0, -36],
   });
 }
 
