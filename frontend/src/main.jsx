@@ -224,7 +224,7 @@ function App() {
       <aside className="sidebar">
         <div>
           <p className="eyebrow">Micronaut + React</p>
-          <h1>Map prefetch</h1>
+          <h1>Наземная станция мониторинга</h1>
           <p className="lead">
             Move or zoom the map. The client requests a larger buffered area and
             renders hardcoded points returned by the backend.
