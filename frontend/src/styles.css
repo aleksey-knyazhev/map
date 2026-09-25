@@ -168,6 +168,35 @@ h2 {
   background: #dce8dd;
 }
 
+.map-point-icon {
+  background: transparent;
+  border: 0;
+}
+
+.map-point-icon__shape {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 2px solid var(--point-color);
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 8px 18px rgba(23, 33, 27, 0.24);
+}
+
+.map-point-icon__shape svg {
+  width: 23px;
+  height: 23px;
+}
+
+.map-point-icon__shape path {
+  fill: var(--point-fill);
+  stroke: var(--point-color);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
 .popup {
   display: grid;
   gap: 4px;
