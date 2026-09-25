@@ -57,6 +57,16 @@ MOVE_THRESHOLD_RATIO = 0.5
 
 ![После превышения порога MOVE_THRESHOLD_RATIO](screenshots/threshold-after.svg)
 
+### Изменение количества загруженных точек
+
+До нового pre-fetch запроса в интерфейсе отображается предыдущее количество точек:
+
+![До изменения количества точек](screenshots/loaded-points-before.svg)
+
+После нового pre-fetch запроса backend возвращает другой набор точек, и счетчик обновляется:
+
+![После изменения количества точек](screenshots/loaded-points-after.svg)
+
 ## Легенда к карте
 
 - поле точек, полученных из backend

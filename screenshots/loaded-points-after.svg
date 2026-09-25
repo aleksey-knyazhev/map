@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">После изменения количества загруженных точек</title>
+  <desc id="desc">Состояние интерфейса после нового pre-fetch запроса: загружено 11 точек.</desc>
+  <rect width="960" height="540" fill="#ebe7dc"/>
+  <rect x="0" y="0" width="320" height="540" fill="#fffdf6" stroke="#d8d2c4" stroke-width="2"/>
+  <text x="28" y="48" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f6f56">MICRONAUT + REACT</text>
+  <text x="28" y="88" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="700" fill="#17211b">Наземная станция</text>
+  <text x="28" y="124" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="700" fill="#17211b">мониторинга</text>
+
+  <g transform="translate(28 170)">
+    <rect x="0" y="0" width="264" height="86" rx="8" fill="#faf7ef" stroke="#d8d2c4" stroke-width="2"/>
+    <text x="16" y="30" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#617066">СТАТУС</text>
+    <text x="16" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#17211b">Загружено точек: 11</text>
+  </g>
+
+  <g transform="translate(350 0)">
+    <rect width="610" height="540" fill="#e7efe4"/>
+    <path d="M50 370C170 310 230 390 350 330C490 260 550 350 690 290C780 250 840 270 930 235" fill="none" stroke="#9dbb9d" stroke-width="18" opacity="0.45"/>
+    <path d="M20 145C130 110 190 165 295 128C425 80 480 160 600 128C705 100 800 130 910 86" fill="none" stroke="#b4c8d7" stroke-width="26" opacity="0.55"/>
+    <rect x="190" y="80" width="360" height="330" fill="none" stroke="#d11f1f" stroke-width="10" stroke-dasharray="28 24"/>
+    <circle cx="250" cy="170" r="16" fill="#fca5a5" stroke="#b91c1c" stroke-width="4"/>
+    <circle cx="320" cy="235" r="16" fill="#86efac" stroke="#15803d" stroke-width="4"/>
+    <circle cx="420" cy="195" r="16" fill="#c4b5fd" stroke="#7c3aed" stroke-width="4"/>
+    <circle cx="500" cy="305" r="16" fill="#5eead4" stroke="#0f766e" stroke-width="4"/>
+    <circle cx="380" cy="330" r="16" fill="#93c5fd" stroke="#1d4ed8" stroke-width="4"/>
+    <circle cx="535" cy="215" r="16" fill="#fdba74" stroke="#c2410c" stroke-width="4"/>
+  </g>
+</svg>
